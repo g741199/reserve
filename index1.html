@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>カレンダー</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+        }
+        .calendar-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .calendar-caption {
+            margin: 20px 0;
+            font-size: 24px;
+        }
+        .calendar {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .calendar th {
+            padding: 10px;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+        }
+        .calendar td {
+            padding: 15px;
+            border: 1px solid #ddd;
+        }
+        .sunday {
+            color: red;
+        }
+        .saturday {
+            color: blue;
+        }
+    </style>
+</head>
+<body>
+    <div class="calendar-container">
+        <div id="calendar-caption" class="calendar-caption"></div>
+        <table class="calendar" id="calendar"></table>
+    </div>
+
+    <script>
+        function generateCalendar() {
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            const currentMonth = now.getMonth();
+            const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            
+            const calendarCaption = document.getElementById('calendar-caption');
+            calendarCaption.textContent = `${currentYear}年 ${currentMonth + 1}月`;
+
+            const calendar = document.getElementById('calendar');
+            const daysOfWeek = ['日', '月', '火', '水', '木', '金', '土'];
+
+            // 曜日のヘッダーを生成
+            let headerRow = '<tr>';
+            daysOfWeek.forEach((day, index) => {
+                headerRow += `<th class="${index === 0 ? 'sunday' : index === 6 ? 'saturday' : ''}">${day}</th>`;
+            });
+            headerRow += '</tr>';
+            calendar.innerHTML = headerRow;
+
+            // 日付のセルを生成
+            let dateRow = '<tr>';
+            for (let i = 0; i < firstDayOfMonth; i++) {
+                dateRow += '<td></td>'; // 月の最初の日まで空のセルを埋める
+            }
+            for (let day = 1; day <= daysInMonth; day++) {
+                if ((day + firstDayOfMonth - 1) % 7 === 0) {
+                    dateRow += '</tr><tr>'; // 日曜日なら新しい行を開始
+                }
+                const dayOfWeek = (day + firstDayOfMonth - 1) % 7;
+                dateRow += `<td class="${dayOfWeek === 0 ? 'sunday' : dayOfWeek === 6 ? 'saturday' : ''}">${day}</td>`;
+            }
+            dateRow += '</tr>';
+            calendar.innerHTML += dateRow;
+        }
+
+        // DOMが読み込まれたらカレンダーを生成
+        document.addEventListener('DOMContentLoaded', generateCalendar);
+    </script>
+</body>
+</html>

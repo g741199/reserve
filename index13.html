@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>カレンダー予定表示</title>
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            text-align: center;
+        }
+        #eventsList {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+        .event {
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <h1>カレンダー予定表示</h1>
+    <input type="date" id="datePicker" />
+    <button onclick="fetchEvents()">予定を表示</button>
+    <div id="eventsList"></div>
+
+    <script>
+        function fetchEvents() {
+            var date = document.getElementById('datePicker').value;
+            if (date) {
+                var scriptUrl = 'https://script.google.com/macros/s/AKfycby3b73Ebk2NhUbOOAxXxaxW-gBBF7mIUAtsqDQ2F7luNDVoVNxikimaGCVygGF9wwo/exec'; // GASのウェブアプリケーションURLを入れてください。
+                fetch(scriptUrl + '?date=' + date)
+                    .then(response => response.json())
+                    .then(events => {
+                        displayEvents(events);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('予定を取得できませんでした。');
+                    });
+            } else {
+                alert('日付を選択してください。');
+            }
+        }
+
+        function displayEvents(events) {
+            var eventsList = document.getElementById('eventsList');
+            eventsList.innerHTML = ''; // Clear the list before adding new events
+
+            events.forEach(event => {
+                var eventElement = document.createElement('div');
+                eventElement.className = 'event';
+                eventElement.innerHTML = `<strong>${event.time}</strong>: ${event.title}`;
+                eventsList.appendChild(eventElement);
+            });
+        }
+    </script>
+</body>
+</html>

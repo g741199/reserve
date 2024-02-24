@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>カレンダー</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style16.css">
+</head>
+<body>
+    <div id="loading">
+        <div class="loader"></div>
+    </div>
+    <!-- まずはカレンダー表示 -->
+    <div class="calendar-container" style="display: none;">
+        <div class="calendar-navigation">
+            <div id="previous-month" class="navigation-button">&lt;</div>
+            <div id="calendar-caption" class="calendar-caption"></div>
+            <div id="next-month" class="navigation-button">&gt;</div>
+        </div>
+        <table class="calendar" id="calendar"></table>
+    </div>
+    <!-- 次に時間枠表示 -->
+    <div class="timeslot-container" id="timeslots"></div>
+    <div class="loader-container" id="loader" style="display: none;">
+        <div class="loader"></div>
+    </div>
+
+    <script src="script16.js"></script>
+</body>
+</html>

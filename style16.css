@@ -1,0 +1,194 @@
+body {
+    font-family: 'Noto Sans JP', sans-serif;
+    text-align: center;
+}
+
+#loading {
+    font-size: 20px;
+    margin-top: 50px;
+}
+
+.calendar-container {
+    max-width: 900px;
+    margin: 0 auto;
+    margin-bottom: 50px;
+    user-select: none;
+    -moz-user-select: none; /* Firefox */
+    -webkit-user-select: none; /* Safari and Chrome */
+    -ms-user-select: none; /* IE/Edge */
+}
+
+.calendar-navigation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.calendar-caption {
+    margin: 20px 0;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.calendar {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.calendar th, .calendar td {
+    padding: 15px;
+    font-size: 15px;
+    width: 14.28%; /* 100% / 7 days */
+    height: 15px; /* 固定の縦幅を設定 */
+    overflow: hidden; /* 内容がはみ出た場合には非表示 */
+}
+
+.calendar th {
+    background-color: #ffffff;
+    border-bottom: 2px solid #ccc;
+}
+
+.calendar td.date-cell:hover:not(.selected) {
+    background-color: #dbf8fe;
+}
+
+.calendar td.selected {
+    background-color: #2bb48bc0;
+    color: white;
+}
+
+.date-cell {
+    cursor: pointer; /* マウスオーバー時にカーソルをポインターに変更 */
+}
+
+.sunday {
+    color: red;
+}
+
+.saturday {
+    color: blue;
+}
+
+.navigation-button {
+    cursor: pointer;
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    background-color: #f0f0f0;
+    margin: 0 10px;
+}
+
+.holiday-title {
+    display: block;
+    font-size: 12px;
+    color: red;
+    white-space: nowrap; /* 追加 */
+}
+
+/*追加*/
+.holiday {
+    color: red;
+}
+
+/*さらに追加*/
+.holiday-selected {
+    color: white;
+}
+
+/**/
+.non-consultation-day {
+    pointer-events: none; /* マウスイベントを無効化 */
+    opacity: 0.2; /* 透明度を下げて非アクティブな見た目に */
+}
+
+
+/*時間枠表示関連ここから*/
+.timeslot-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* 子要素を中央揃えにする */
+    max-width: 800px;
+    margin: 20px auto;
+}
+.timeslot {
+    flex: 0 0 18%; /* 5 boxes per row */
+    border: 1px solid #e5e5e5;
+    margin: 2px; /*ここで時間枠の間隔を設定*/
+    padding: 10px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 70px;
+    border-radius: 10px; /* Rounded corners */
+}
+.timeslot.available {
+    background-color: #ffffff; /* White background for '〇' and '△' */
+    color: #5cb85cbc; /* Light green text for '〇' and '△' */
+}
+.timeslot.unavailable {
+    background-color: #f5f4f4; /* Light gray background for '×' */
+    color: #cdcdcd; /* Gray text for '×' */
+}
+.timeslot .time {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #8f8f8f; /* Dark gray for time */
+}
+.timeslot .status {
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 1;
+}
+
+/* 選択された時間枠のスタイル */
+.timeslot.selected {
+    border-color: #248d61af; /* 濃い緑色の枠 */
+    background-color: #ecf9f8; /* 淡い緑色の背景 */
+}
+
+.timeslot.selected .status {
+    color: #00705e; /* 選択された状態表示の色（濃い緑色） */
+}
+
+.timeslot, .timeslot .time, .timeslot .status {
+    user-select: none;
+    -moz-user-select: none; /* Firefox */
+    -webkit-user-select: none; /* Safari and Chrome */
+    -ms-user-select: none; /* IE/Edge */
+}
+/*時間枠表示関連ここまで*/
+
+
+/* 既存のスタイルはそのままに、以下を追加または修正 */
+#loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 300px; /* 画面の高さいっぱいに広げる */
+}
+
+/**/
+.loader-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px; /* Viewport height to cover the full screen */
+}
+/**/
+
+.loader {
+    border: 4px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 4px solid #3498db;
+    width: 30px;
+    height: 30px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

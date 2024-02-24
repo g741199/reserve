@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>カレンダー予定表示</title>
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            text-align: center;
+        }
+        .timeslot-container {
+            display: flex;
+            flex-wrap: wrap;
+            max-width: 800px;
+            margin: 20px auto;
+        }
+        .timeslot {
+            flex: 0 0 18%; /* 5 boxes per row */
+            border: 1px solid #ccc;
+            margin: 5px;
+            padding: 10px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100px;
+        }
+        .timeslot.available {
+            background-color: #dff0d8;
+        }
+        .timeslot.unavailable {
+            background-color: #f2dede;
+        }
+        .timeslot.limited {
+            background-color: #fcf8e3;
+        }
+        .timeslot .time {
+            font-size: 1.2em;
+            margin-bottom: 5px;
+        }
+        .timeslot .status {
+            font-size: 2em;
+            line-height: 1;
+        }
+    </style>
+</head>
+<body>
+    <h1>カレンダー予定表示</h1>
+    <input type="date" id="datePicker" />
+    <button onclick="fetchEvents()">予定を表示</button>
+    <div class="timeslot-container" id="timeslots"></div>
+
+    <script>
+        // JavaScriptのコードは同じで、表示する要素をdivに適応するように変更します。
+        // 関数 fetchEvents と displayEvents をここに挿入します。
+        function fetchEvents() {
+            var date = document.getElementById('datePicker').value;
+            if (date) {
+                var scriptUrl = 'https://script.google.com/macros/s/AKfycbwS2ZNc6ImPXRfFbYS1DnibpxY_1A8fbWdtXAAXvMbqCboTj4UvBggNLuzVYShnTZ4/exec'; // GASのウェブアプリケーションURLを入れてください。
+                fetch(scriptUrl + '?date=' + date)
+                    .then(response => response.json())
+                    .then(events => {
+                        displayEvents(events);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('予定を取得できませんでした。');
+                    });
+            } else {
+                alert('日付を選択してください。');
+            }
+        }
+
+
+        function displayEvents(events) {
+            var timeslotContainer = document.getElementById('timeslots');
+            timeslotContainer.innerHTML = ''; // Clear the container before adding new timeslots
+
+            events.forEach(event => {
+                var timeslotElement = document.createElement('div');
+                timeslotElement.className = 'timeslot';
+        
+                var timeElement = document.createElement('div');
+                timeElement.className = 'time';
+                timeElement.textContent = event.time.split('-')[0]; // Display only the start time
+        
+                var statusElement = document.createElement('div');
+                statusElement.className = 'status';
+        
+                // Determine the status based on the event title
+                if (event.title.includes('〇')) {
+                    timeslotElement.classList.add('available');
+                    statusElement.textContent = '〇';
+                } else if (event.title.includes('×')) {
+                    timeslotElement.classList.add('unavailable');
+                    statusElement.textContent = '×';
+                } else if (event.title.includes('△')) {
+                    timeslotElement.classList.add('limited');
+                    statusElement.textContent = '△';
+                }
+        
+                timeslotElement.appendChild(timeElement);
+                timeslotElement.appendChild(statusElement);
+                timeslotContainer.appendChild(timeslotElement);
+            });
+        }
+
+    </script>
+</body>
+</html>

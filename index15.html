@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>カレンダー予定表示</title>
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            text-align: center;
+        }
+        .timeslot-container {
+            display: flex;
+            flex-wrap: wrap;
+            max-width: 800px;
+            margin: 20px auto;
+        }
+        .timeslot {
+            flex: 0 0 18%; /* 5 boxes per row */
+            border: 1px solid #e5e5e5;
+            margin: 2px; /*ここで時間枠の間隔を設定*/
+            padding: 10px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 90px;
+            border-radius: 10px; /* Rounded corners */
+        }
+        .timeslot.available {
+            background-color: #ffffff; /* White background for '〇' and '△' */
+            color: #5cb85cbc; /* Light green text for '〇' and '△' */
+        }
+        .timeslot.unavailable {
+            background-color: #f5f4f4; /* Light gray background for '×' */
+            color: #cdcdcd; /* Gray text for '×' */
+        }
+        .timeslot .time {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #8f8f8f; /* Dark gray for time */
+        }
+        .timeslot .status {
+            font-size: 20px;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        /* 選択された時間枠のスタイル */
+        .timeslot.selected {
+            border-color: #004d40; /* 濃い緑色の枠 */
+            background-color: #d8fffccc; /* 淡い緑色の背景 */
+        }
+
+        .timeslot.selected .status {
+            color: #004d40; /* 選択された状態表示の色（濃い緑色） */
+        }
+
+        .timeslot, .timeslot .time, .timeslot .status {
+            user-select: none;
+        -moz-user-select: none; /* Firefox */
+        -webkit-user-select: none; /* Safari and Chrome */
+        -ms-user-select: none; /* IE/Edge */
+        }
+
+        .loader-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100px; /* Viewport height to cover the full screen */
+        }
+
+        .loader {
+              border: 4px solid #f3f3f3; /* Light grey border for the loader */
+              border-top: 4px solid #3498db; /* Blue border for the loader segment */
+              border-radius: 50%;
+              width: 40px;
+              height: 40px;
+              animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+        }
+
+    </style>
+</head>
+<body>
+    <h1>カレンダー予定表示</h1>
+    <input type="date" id="datePicker" />
+    <button onclick="fetchEvents()">予定を表示</button>
+    <div class="timeslot-container" id="timeslots"></div>
+    <div class="loader-container" id="loader" style="display: none;">
+        <div class="loader"></div>
+    </div>
+
+    
+    <script>
+        function fetchEvents() {
+            var date = document.getElementById('datePicker').value;
+            console.log(date); // 選択された日付をコンソールに表示（デバッグ用）
+            if (date) {
+                var scriptUrl = 'https://script.google.com/macros/s/AKfycbwS2ZNc6ImPXRfFbYS1DnibpxY_1A8fbWdtXAAXvMbqCboTj4UvBggNLuzVYShnTZ4/exec'; // GASのウェブアプリケーションURLを入れてください。
+
+                showLoader();//ローディング表示
+                // ここで時間枠の表示をクリア
+                var timeslotContainer = document.getElementById('timeslots');
+                timeslotContainer.innerHTML = '';
+                fetch(scriptUrl + '?date=' + date)
+                    .then(response => response.json())
+                    .then(events => {
+                        displayEvents(events);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('予定を取得できませんでした。');
+                    })
+                    .finally(() => {
+                        hideLoader();//ローディング非表示
+                    });
+            } else {
+                alert('日付を選択してください。');
+            }
+        }
+
+
+        function displayEvents(events) {
+            var timeslotContainer = document.getElementById('timeslots');
+            timeslotContainer.innerHTML = ''; // Clear the container before adding new timeslots
+
+            events.forEach(event => {
+                var timeslotElement = document.createElement('div');
+                timeslotElement.className = 'timeslot';
+        
+                var timeElement = document.createElement('div');
+                timeElement.className = 'time';
+                timeElement.textContent = event.time.split('-')[0]; // Display only the start time
+        
+                var statusElement = document.createElement('div');
+                statusElement.className = 'status';
+        
+                // Determine the status based on the event title
+                if (event.title.includes('〇')) {
+                    timeslotElement.classList.add('available');
+                    statusElement.textContent = '〇';
+                } else if (event.title.includes('×')) {
+                    timeslotElement.classList.add('unavailable');
+                    statusElement.textContent = '×';
+                } else if (event.title.includes('△')) {
+                    timeslotElement.classList.add('available');
+                    statusElement.textContent = '△';
+                }
+        
+                timeslotElement.appendChild(timeElement);
+                timeslotElement.appendChild(statusElement);
+                timeslotContainer.appendChild(timeslotElement);
+            });
+
+            // イベントを表示する関数の最後でこの関数を呼び出す
+            addClickListenerToTimeslots();
+
+        }
+
+        let selectedTimeslot = null; // 現在選択されている時間枠を追跡する変数
+
+        function addClickListenerToTimeslots() {
+            var timeslots = document.querySelectorAll('.timeslot');
+            timeslots.forEach(function(timeslot) {
+                timeslot.addEventListener('click', function() {
+                    // "〇" または "△" の時間枠が選択可能かチェック
+                    if (this.classList.contains('available') || this.classList.contains('limited')) {
+                        // 以前に選択された時間枠があればリセットする
+                        if (selectedTimeslot) {
+                            resetTimeslot(selectedTimeslot);
+                        }
+                        // 新しい時間枠を選択状態にする
+                        this.classList.add('selected');
+                        var statusElement = this.querySelector('.status');
+                        statusElement.textContent = '✓';
+                        selectedTimeslot = this; // 選択された時間枠を更新
+                    }
+                });
+            });
+        }
+
+        function resetTimeslot(timeslot) {
+            // 選択状態のクラスを削除
+            timeslot.classList.remove('selected');
+            // 状態表示要素を取得して元の記号に戻す
+            var statusElement = timeslot.querySelector('.status');
+            statusElement.textContent = timeslot.classList.contains('available') ? '〇' : '△';
+        }
+
+        function showLoader() {
+            document.getElementById('loader').style.display = 'flex';
+        }
+        function hideLoader() {
+            document.getElementById('loader').style.display = 'none';
+        }
+
+    </script>
+</body>
+</html>

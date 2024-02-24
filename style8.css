@@ -1,0 +1,78 @@
+body {
+    font-family: 'Noto Sans JP', sans-serif;
+    text-align: center;
+}
+
+.calendar-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.calendar-navigation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.calendar-caption {
+    margin: 20px 0;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.calendar {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.calendar th, .calendar td {
+    padding: 5px; /* 上下の余白を減らす */
+    font-size: 13px;
+    width: 14.28%; /* 100% / 7 days */
+    height: 30px; /* 縦幅を固定して小さくする */
+    overflow: hidden; /* 内容がはみ出た場合には非表示 */
+}
+
+
+.calendar th {
+    background-color: #ffffff;
+    border-bottom: 2px solid #ccc;
+}
+
+.calendar td.date-cell:hover:not(.selected) {
+    background-color: #dbf8fe;
+}
+
+.calendar td.selected {
+    background-color: #2bb48bc0;
+    color: white;
+}
+
+.sunday {
+    color: red;
+}
+
+.saturday {
+    color: blue;
+}
+
+.navigation-button {
+    cursor: pointer;
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    background-color: #f0f0f0;
+    margin: 0 10px;
+}
+
+.holiday-title {
+    display: block;
+    font-size: 10px;
+    color: red;
+    white-space: nowrap;
+}
+
+.calendar td.selected .holiday-title {
+    color: white;
+}
+

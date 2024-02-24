@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>カレンダー</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            text-align: center;
+        }
+        .calendar-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .calendar-navigation {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px 0;
+        }
+        .calendar-caption {
+            margin: 20px 0;
+            font-size: 15px; /* 年月日の文字サイズを変更 */
+            font-weight: 700;
+        }
+        .calendar {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .calendar th, .calendar td {
+            padding: 15px;
+            font-size: 13px; /* 曜日と日付の文字サイズを変更 */
+        }
+        .calendar th {
+            background-color: #ffffff;
+            border-bottom: 2px solid #ccc;
+        }
+        .sunday {
+            color: red;
+        }
+        .saturday {
+            color: blue;
+        }
+        .navigation-button {
+            cursor: pointer;
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            background-color: #f0f0f0;
+            margin: 0 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="calendar-container">
+        <div class="calendar-navigation">
+            <div id="previous-month" class="navigation-button">&lt;</div>
+            <div id="calendar-caption" class="calendar-caption"></div>
+            <div id="next-month" class="navigation-button">&gt;</div>
+        </div>
+        <table class="calendar" id="calendar"></table>
+    </div>
+
+    <script>
+        let currentYear = new Date().getFullYear();
+        let currentMonth = new Date().getMonth();
+
+        function generateCalendar(year, month) {
+            const firstDayOfMonth = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            
+            const calendarCaption = document.getElementById('calendar-caption');
+            calendarCaption.textContent = `${year}年 ${month + 1}月`;
+
+            const calendar = document.getElementById('calendar');
+            calendar.innerHTML = ''; // Clear the calendar before adding new dates
+            const daysOfWeek = ['日', '月', '火', '水', '木', '金', '土'];
+
+            // Add the header row for days of week
+            let headerRow = '<tr>';
+            daysOfWeek.forEach((day, index) => {
+                headerRow += `<th class="${index === 0 ? 'sunday' : index === 6 ? 'saturday' : ''}">${day}</th>`;
+            });
+            headerRow += '</tr>';
+            calendar.innerHTML = headerRow;
+
+            // Add the dates of the month
+            let dateRow = '<tr>';
+            for (let i = 0; i < firstDayOfMonth; i++) {
+                dateRow += '<td></td>';
+            }
+            for (let day = 1; day <= daysInMonth; day++) {
+                if ((day + firstDayOfMonth - 1) % 7 === 0) {
+                    dateRow += '</tr><tr>';
+                }
+                const dayOfWeek = (day + firstDayOfMonth - 1) % 7;
+                dateRow += `<td class="${dayOfWeek === 0 ? 'sunday' : dayOfWeek === 6 ? 'saturday' : ''}">${day}</td>`;
+            }
+            dateRow += '</tr>';
+            calendar.innerHTML += dateRow;
+        }
+
+        function navigateMonth(direction) {
+            if (direction === 'next') {
+                currentMonth++;
+                if (currentMonth > 11) {
+                    currentMonth = 0;
+                    currentYear++;
+                }
+            } else if (direction === 'previous') {
+                currentMonth--;
+                if (currentMonth < 0) {
+                    currentMonth = 11;
+                    currentYear--;
+                }
+            }
+            generateCalendar(currentYear, currentMonth);
+        }
+
+        document.getElementById('next-month').addEventListener('click', () => navigateMonth('next'));
+        document.getElementById('previous-month').addEventListener('click', () => navigateMonth('previous'));
+
+        // Initially generate the current month's calendar
+        generateCalendar(currentYear, currentMonth);
+    </script>
+</body>
+</html>

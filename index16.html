@@ -25,6 +25,45 @@
         <div class="loader"></div>
     </div>
 
+    <!--  -->
+    <div id="appointment-buttons" class="hidden">
+        <button class="new-patient-button" id="new-patient">初めての方（初診）</button>
+        <button class="returning-patient-button" id="returning-patient">再診（対面）</button>
+        <button class="online-returning-patient-button" id="online-returning-patient">オンライン再診</button>
+    </div>
+    
+    <div id="appointment-form" class="hidden">
+        <div class="fade-in">
+            <p id="selected-date-time">◎初診◎　<span id="datetime-display"></span></p>
+            <input type="text" id="name" placeholder="名前" required><br>
+            <input type="email" id="email" placeholder="メールアドレス" required><br>
+            <input type="tel" id="phone" placeholder="連絡先電話番号（ハイフンなし）" required><br>
+            <button id="proceed-button" disabled>初診予約を進める</button>
+            <p>日付変更、再診に変更する場合は、日付・時間帯をもういちど選択しなおしてください。</p>
+        </div>
+    </div>
+    <div id="returning-patient-form" class="hidden">
+        <div class="fade-in">
+            <p>◎再診◎　<span id="datetime-display-returning"></span></p>
+            <input type="text" id="name-returning" placeholder="名前" required><br>
+            <input type="email" id="email-returning" placeholder="メールアドレス" required><br>
+            <input type="tel" id="phone-returning" placeholder="連絡先電話番号（ハイフンなし）" required><br>
+            <button id="proceed-button-returning" disabled>再診予約を進める</button>
+            <p>日付変更、初診に変更する場合は、日付・時間帯をもういちど選択しなおしてください。</p>
+        </div>
+    </div>
+    <div id="online-returning-patient-form" class="hidden">
+        <div class="fade-in">
+            <p id="online-selected-date-time">◎オンライン再診◎　<span id="online-datetime-display-returning"></span></p>
+            <input type="text" id="online-name" placeholder="名前" required><br>
+            <input type="email" id="online-email" placeholder="メールアドレス" required><br>
+            <input type="tel" id="online-phone" placeholder="連絡先電話番号（ハイフンなし）" required><br>
+            <button id="online-proceed-button" disabled>オンライン再診予約を進める</button>
+            <p>日付変更、初診、再診（対面）に変更する場合は、日付・時間帯をもういちど選択しなおしてください。</p>
+        </div>
+    </div>
+    
+
     <script src="script16.js"></script>
 </body>
 </html>

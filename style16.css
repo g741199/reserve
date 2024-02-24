@@ -109,6 +109,7 @@ body {
     justify-content: center; /* 子要素を中央揃えにする */
     max-width: 800px;
     margin: 20px auto;
+    margin-bottom: 50px;
 }
 .timeslot {
     flex: 0 0 18%; /* 5 boxes per row */
@@ -175,7 +176,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100px; /* Viewport height to cover the full screen */
+    height: 10px; /* Viewport height to cover the full screen */
 }
 /**/
 
@@ -191,4 +192,137 @@ body {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+
+
+/*-------------------初診、再診ボタン-------------------*/
+
+
+.fade-in {
+    opacity: 0;
+    animation: fadeIn ease 1s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+.new-patient-button, .returning-patient-button, .online-returning-patient-button {
+    margin: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+    background-color: #2bb48bc0;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    margin-bottom: 50px;
+}
+
+.new-patient-button:hover, .returning-patient-button:hover, .online-returning-patient-button:hover {
+    background-color: #2bb48b52;
+}
+
+.hidden {
+    display: none;
+}
+
+/*初診フォーム*/
+#appointment-form {
+    margin-top: 20px;
+    /*margin-bottom: 100px;*/
+    width: 400px;
+    margin: 100px auto;
+}
+
+#appointment-form input,
+#appointment-form button {
+    margin-top: 10px;
+    padding: 10px;
+    width: 80%;
+    box-sizing: border-box;
+}
+
+#proceed-button {
+    background-color: lightgray;
+    color: gray;
+    border: none;
+    border-radius: 15px;
+}
+
+#proceed-button.active {
+    background-color: #2bb48bc0;
+    color: white;
+    cursor: pointer;
+}
+
+#proceed-button.active:hover {
+    background-color: rgba(255, 0, 0, 0.562);
+}
+
+/*再診フォーム*/
+#returning-patient-form {
+    margin-top: 20px;
+    width: 400px;
+    margin: 100px auto;
+}
+
+#returning-patient-form input,
+#returning-patient-form button {
+    margin-top: 10px;
+    padding: 10px;
+    width: 80%;
+    box-sizing: border-box;
+}
+
+#proceed-button-returning {
+    background-color: lightgray;
+    color: gray;
+    border: none;
+    border-radius: 15px;
+}
+
+#proceed-button-returning.active {
+    background-color: #2bb48bc0;
+    color: white;
+    cursor: pointer;
+}
+
+#proceed-button-returning.active:hover {
+    background-color: red;
+}
+
+/*オンライン再診フォーム*/
+#online-returning-patient-form {
+    margin-top: 20px;
+    width: 400px;
+    margin: 100px auto;
+}
+
+#online-returning-patient-form input,
+#online-returning-patient-form button {
+    margin-top: 10px;
+    padding: 10px;
+    width: 80%;
+    box-sizing: border-box;
+}
+
+#online-proceed-button {
+    background-color: lightgray;
+    color: gray;
+    border: none;
+    border-radius: 15px;
+}
+
+#online-proceed-button.active {
+    background-color: #2bb48bc0;
+    color: white;
+    cursor: pointer;
+}
+
+#online-proceed-button.active:hover {
+    background-color: red;
 }

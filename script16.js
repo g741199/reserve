@@ -121,7 +121,13 @@ function generateCalendar(year, month) {
                     holidayTitle.style.color = 'white'; // Change holiday title color to white
                 }
 
-                //ここ、選択日の、時間枠表示処理をいれる？
+                // 初診・再診ボタン以下をhidden
+                if (!document.getElementById('appointment-buttons').classList.contains('hidden')) {
+                    document.getElementById('appointment-buttons').classList.add('hidden');
+                    document.getElementById('appointment-form').classList.add('hidden');
+                }
+
+                // 選択日の時間枠表示処理
                 selectedDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                 //console.log(selectedDate); // 選択された日付をコンソールに表示（デバッグ用）
                 fetchEvents();
@@ -160,7 +166,18 @@ function navigateMonth(direction) {
             currentYear--;
         }
     }
+
+    // 時間枠コンテナを隠す
+    if (!document.getElementById('timeslots').classList.contains('hidden')) {
+        document.getElementById('timeslots').classList.add('hidden');
+    }
     generateCalendar(currentYear, currentMonth);
+
+    if (!document.getElementById('appointment-buttons').classList.contains('hidden')) {
+        document.getElementById('appointment-buttons').classList.add('hidden');
+        document.getElementById('appointment-form').classList.add('hidden');
+    }
+
 }
 
 document.getElementById('next-month').addEventListener('click', () => navigateMonth('next'));
@@ -198,8 +215,13 @@ function displayEvents(events) {
         timeslotContainer.appendChild(timeslotElement);
     });
 
+    if (document.getElementById('timeslots').classList.contains('hidden')) {
+        document.getElementById('timeslots').classList.remove('hidden');
+    }
     // イベントを表示する関数の最後でこの関数を呼び出す
     addClickListenerToTimeslots();
+    // 時間枠コンテナにスクロール
+    timeslotContainer.scrollIntoView({ behavior: 'smooth' });
 
 }
 
@@ -220,6 +242,22 @@ function addClickListenerToTimeslots() {
                 var statusElement = this.querySelector('.status');
                 statusElement.textContent = '✓';
                 selectedTimeslot = this; // 選択された時間枠を更新
+
+                // 初診・再診ボタンを表示
+                document.getElementById('new-patient').style.display = 'inline-block';
+                document.getElementById('returning-patient').style.display = 'inline-block';
+                document.getElementById('online-returning-patient').style.display = 'inline-block';
+
+                //初診ボタンに対する処理だけでよいのか？
+                document.getElementById('appointment-buttons').classList.remove('hidden');
+                fadeIn(document.getElementById('appointment-buttons'));
+                document.getElementById('appointment-buttons').scrollIntoView({ behavior: 'smooth' })
+
+                // 予約フォーム（初診用）を非表示にする（フェードアウトではなく、即時非表示）
+                document.getElementById('appointment-form').classList.add('hidden');
+                document.getElementById('returning-patient-form').classList.add('hidden');
+                document.getElementById('online-returning-patient-form').classList.add('hidden');
+ 
             }
         });
     });
@@ -239,3 +277,137 @@ function showLoader() {
 function hideLoader() {
     document.getElementById('loader').style.display = 'none';
 }
+
+//-----------------------------------------------------------------
+//初診フォーム
+document.getElementById('new-patient').addEventListener('click', function() {
+    document.getElementById('appointment-form').classList.remove('hidden');
+    fadeIn(document.getElementById('appointment-form'));
+
+    document.getElementById('returning-patient').style.display = 'none';
+    document.getElementById('online-returning-patient').style.display = 'none';
+    //document.getElementById('datetime-display').textContent = selectedDate + ' ' + selectedTimeslot.querySelector('.time').textContent;
+    let selectedDateTime = new Date(selectedDate);
+    let selectedTime = selectedTimeslot.querySelector('.time').textContent;
+    let year = selectedDateTime.getFullYear();
+    let month = selectedDateTime.getMonth() + 1; // 月は0から始まるため、1を足す
+    let day = selectedDateTime.getDate();
+    let hour = selectedTime.split(':')[0]; // 「14:00」のような形式から時間を取得
+    let minute = selectedTime.split(':')[1]; // 「14:00」のような形式から分を取得
+    let dayOfWeek = selectedDateTime.getDay();
+    // 曜日の名前を配列で定義
+    let daysOfWeek = ['日', '月', '火', '水', '木', '金', '土'];
+    // 曜日の名前を取得
+    let dayName = daysOfWeek[dayOfWeek];
+
+    document.getElementById('datetime-display').textContent = `${year}年${month}月${day}日 (${dayName}) ${hour}時${minute}分`;
+    document.getElementById('appointment-form').scrollIntoView({ behavior: 'smooth' })
+});
+
+//再診フォーム
+document.getElementById('returning-patient').addEventListener('click', function() {
+    document.getElementById('returning-patient-form').classList.remove('hidden');
+    fadeIn(document.getElementById('returning-patient-form'));
+
+    document.getElementById('new-patient').style.display = 'none';
+    document.getElementById('online-returning-patient').style.display = 'none';
+    let selectedDateTime = new Date(selectedDate);
+    let selectedTime = selectedTimeslot.querySelector('.time').textContent;
+    let year = selectedDateTime.getFullYear();
+    let month = selectedDateTime.getMonth() + 1; // 月は0から始まるので1を足す
+    let day = selectedDateTime.getDate();
+    let hour = selectedTime.split(':')[0]; // "14:00"のような形式から時間を抽出
+    let minute = selectedTime.split(':')[1]; // "14:00"のような形式から分を抽出
+    let dayOfWeek = selectedDateTime.getDay();
+    // 曜日の名前を配列で定義
+    let daysOfWeek = ['日', '月', '火', '水', '木', '金', '土'];
+    // 曜日の名前を取得
+    let dayName = daysOfWeek[dayOfWeek];
+    document.getElementById('datetime-display-returning').textContent = `${year}年${month}月${day}日 (${dayName}) ${hour}時${minute}分`;
+    document.getElementById('returning-patient-form').scrollIntoView({ behavior: 'smooth' });
+});
+
+//オンライン再診フォーム
+document.getElementById('online-returning-patient').addEventListener('click', function() {
+    document.getElementById('online-returning-patient-form').classList.remove('hidden');
+    fadeIn(document.getElementById('online-returning-patient-form'));
+
+    document.getElementById('new-patient').style.display = 'none';
+    document.getElementById('returning-patient').style.display = 'none';
+    let selectedDateTime = new Date(selectedDate);
+    let selectedTime = selectedTimeslot.querySelector('.time').textContent;
+    let year = selectedDateTime.getFullYear();
+    let month = selectedDateTime.getMonth() + 1;
+    let day = selectedDateTime.getDate();
+    let hour = selectedTime.split(':')[0];
+    let minute = selectedTime.split(':')[1];
+    let dayOfWeek = selectedDateTime.getDay();
+    let daysOfWeek = ['日', '月', '火', '水', '木', '金', '土'];
+    let dayName = daysOfWeek[dayOfWeek];
+    document.getElementById('online-datetime-display-returning').textContent = `${year}年${month}月${day}日 (${dayName}) ${hour}時${minute}分`;
+    document.getElementById('online-returning-patient-form').scrollIntoView({ behavior: 'smooth' });
+});
+
+function fadeIn(element) {
+    element.classList.add('fade-in');
+}
+
+// 初診予約フォームの入力欄のイベントリスナー
+const inputs = document.querySelectorAll('#appointment-form input');
+const button = document.getElementById('proceed-button');
+
+inputs.forEach(input => {
+    input.addEventListener('input', function() {
+        let name = document.getElementById('name').value;
+        let email = document.getElementById('email').value;
+        let phone = document.getElementById('phone').value;
+
+        if (name && email.includes('@') && phone.match(/^\d{10,11}$/)) {
+            button.disabled = false;
+            button.classList.add('active');
+        } else {
+            button.disabled = true;
+            button.classList.remove('active');
+        }
+    });
+});
+
+// 再診予約フォームの入力欄のイベントリスナー
+const returningInputs = document.querySelectorAll('#returning-patient-form input');
+const returningButton = document.getElementById('proceed-button-returning');
+
+returningInputs.forEach(input => {
+    input.addEventListener('input', function() {
+        let name = document.getElementById('name-returning').value;
+        let email = document.getElementById('email-returning').value;
+        let phone = document.getElementById('phone-returning').value;
+
+        if (name && email.includes('@') && phone.match(/^\d{10,11}$/)) {
+            returningButton.disabled = false;
+            returningButton.classList.add('active');
+        } else {
+            returningButton.disabled = true;
+            returningButton.classList.remove('active');
+        }
+    });
+});
+
+// オンライン再診予約フォームの入力欄のイベントリスナー
+const onlineInputs = document.querySelectorAll('#online-returning-patient-form input');
+const onlineButton = document.getElementById('online-proceed-button');
+
+onlineInputs.forEach(input => {
+    input.addEventListener('input', function() {
+        let name = document.getElementById('online-name').value;
+        let email = document.getElementById('online-email').value;
+        let phone = document.getElementById('online-phone').value;
+
+        if (name && email.includes('@') && phone.match(/^\d{10,11}$/)) {
+            onlineButton.disabled = false;
+            onlineButton.classList.add('active');
+        } else {
+            onlineButton.disabled = true;
+            onlineButton.classList.remove('active');
+        }
+    });
+});

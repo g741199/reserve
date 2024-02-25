@@ -2,6 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>カレンダー</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style16.css">
@@ -26,15 +27,15 @@
     </div>
 
     <!--  -->
-    <div id="appointment-buttons" class="hidden">
+    <div id="appointment-form" class="hidden">
         <button class="new-patient-button" id="new-patient">初めての方（初診）</button>
         <button class="returning-patient-button" id="returning-patient">再診（対面）</button>
         <button class="online-returning-patient-button" id="online-returning-patient">オンライン再診</button>
     </div>
     
-    <div id="appointment-form" class="hidden">
+    <div id="new-patient-form" class="hidden">
         <div class="fade-in">
-            <p id="selected-date-time">◎初診◎　<span id="datetime-display"></span></p>
+            <p id="selected-date-time"><span id="datetime-display"></span></p>
             <input type="text" id="name" placeholder="名前" required><br>
             <input type="email" id="email" placeholder="メールアドレス" required><br>
             <input type="tel" id="phone" placeholder="連絡先電話番号（ハイフンなし）" required><br>
@@ -44,7 +45,7 @@
     </div>
     <div id="returning-patient-form" class="hidden">
         <div class="fade-in">
-            <p>◎再診◎　<span id="datetime-display-returning"></span></p>
+            <p><span id="datetime-display-returning"></span></p>
             <input type="text" id="name-returning" placeholder="名前" required><br>
             <input type="email" id="email-returning" placeholder="メールアドレス" required><br>
             <input type="tel" id="phone-returning" placeholder="連絡先電話番号（ハイフンなし）" required><br>
@@ -54,7 +55,7 @@
     </div>
     <div id="online-returning-patient-form" class="hidden">
         <div class="fade-in">
-            <p id="online-selected-date-time">◎オンライン再診◎　<span id="online-datetime-display-returning"></span></p>
+            <p id="online-selected-date-time"><span id="online-datetime-display-returning"></span></p>
             <input type="text" id="online-name" placeholder="名前" required><br>
             <input type="email" id="online-email" placeholder="メールアドレス" required><br>
             <input type="tel" id="online-phone" placeholder="連絡先電話番号（ハイフンなし）" required><br>
@@ -62,8 +63,6 @@
             <p>日付変更、初診、再診（対面）に変更する場合は、日付・時間帯をもういちど選択しなおしてください。</p>
         </div>
     </div>
-    
-
     <script src="script16.js"></script>
 </body>
 </html>

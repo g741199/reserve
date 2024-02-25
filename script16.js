@@ -102,7 +102,10 @@ function generateCalendar(year, month) {
         }
 
         if (consultationDays.includes(dateString)) {
-            //クリック時の処理
+
+            //---------------------------------------------------
+            // 診療可能日のクリック時の処理、ここで診療可能な時間枠を表示する
+            //---------------------------------------------------
             dayCell.addEventListener('click', function() {
                 // Remove selection from other date cells
                 document.querySelectorAll('.date-cell').forEach(cell => {
@@ -121,10 +124,16 @@ function generateCalendar(year, month) {
                     holidayTitle.style.color = 'white'; // Change holiday title color to white
                 }
 
-                // 初診・再診ボタン以下をhidden
-                if (!document.getElementById('appointment-buttons').classList.contains('hidden')) {
-                    document.getElementById('appointment-buttons').classList.add('hidden');
+                //----------------------------------------------------------------
+                //
+                // 診療可能日のクリック時の処理、ここで診療可能な時間枠を表示する
+                //
+                //----------------------------------------------------------------
+                if (!document.getElementById('appointment-form').classList.contains('hidden')) {
                     document.getElementById('appointment-form').classList.add('hidden');
+                    document.getElementById('new-patient-form').classList.add('hidden');
+                    document.getElementById('returning-patient-form').classList.add('hidden');
+                    document.getElementById('online-returning-patient-form').classList.add('hidden');
                 }
 
                 // 選択日の時間枠表示処理
@@ -173,9 +182,12 @@ function navigateMonth(direction) {
     }
     generateCalendar(currentYear, currentMonth);
 
-    if (!document.getElementById('appointment-buttons').classList.contains('hidden')) {
-        document.getElementById('appointment-buttons').classList.add('hidden');
+    // ここで初診再診オンライン再診ボタン以下を非表示
+    if (!document.getElementById('appointment-form').classList.contains('hidden')) {
         document.getElementById('appointment-form').classList.add('hidden');
+        document.getElementById('new-patient-form').classList.add('hidden');
+        document.getElementById('returning-patient-form').classList.add('hidden');
+        document.getElementById('online-returning-patient-form').classList.add('hidden');
     }
 
 }
@@ -243,18 +255,20 @@ function addClickListenerToTimeslots() {
                 statusElement.textContent = '✓';
                 selectedTimeslot = this; // 選択された時間枠を更新
 
-                // 初診・再診ボタンを表示
+                // ↓スタイルシートに入れてもいいかね
                 document.getElementById('new-patient').style.display = 'inline-block';
                 document.getElementById('returning-patient').style.display = 'inline-block';
                 document.getElementById('online-returning-patient').style.display = 'inline-block';
 
-                //初診ボタンに対する処理だけでよいのか？
-                document.getElementById('appointment-buttons').classList.remove('hidden');
-                fadeIn(document.getElementById('appointment-buttons'));
-                document.getElementById('appointment-buttons').scrollIntoView({ behavior: 'smooth' })
+                //-----------------------------------------
+                //  時間枠（timeslot）クリック後、初診再診オンライン再診ボタンを表示する
+                //-----------------------------------------
+                document.getElementById('appointment-form').classList.remove('hidden');
+//                fadeIn(document.getElementById('appointment-buttons'));
+                document.getElementById('appointment-form').scrollIntoView({ behavior: 'smooth' })
 
-                // 予約フォーム（初診用）を非表示にする（フェードアウトではなく、即時非表示）
-                document.getElementById('appointment-form').classList.add('hidden');
+                // 予約フォーム（初診、再診、オンライン再診）を非表示にする（フェードアウトではなく即時非表示）
+                document.getElementById('new-patient-form').classList.add('hidden');
                 document.getElementById('returning-patient-form').classList.add('hidden');
                 document.getElementById('online-returning-patient-form').classList.add('hidden');
  
@@ -281,8 +295,9 @@ function hideLoader() {
 //-----------------------------------------------------------------
 //初診フォーム
 document.getElementById('new-patient').addEventListener('click', function() {
-    document.getElementById('appointment-form').classList.remove('hidden');
-    fadeIn(document.getElementById('appointment-form'));
+    document.getElementById('new-patient-form').classList.remove('hidden');
+    fadeIn(document.getElementById('new-patient-form'));
+
 
     document.getElementById('returning-patient').style.display = 'none';
     document.getElementById('online-returning-patient').style.display = 'none';
@@ -300,7 +315,7 @@ document.getElementById('new-patient').addEventListener('click', function() {
     // 曜日の名前を取得
     let dayName = daysOfWeek[dayOfWeek];
 
-    document.getElementById('datetime-display').textContent = `${year}年${month}月${day}日 (${dayName}) ${hour}時${minute}分`;
+    document.getElementById('datetime-display').textContent = `◎初診◎　${year}年${month}月${day}日 (${dayName}) ${hour}時${minute}分`;
     document.getElementById('appointment-form').scrollIntoView({ behavior: 'smooth' })
 });
 
@@ -308,6 +323,7 @@ document.getElementById('new-patient').addEventListener('click', function() {
 document.getElementById('returning-patient').addEventListener('click', function() {
     document.getElementById('returning-patient-form').classList.remove('hidden');
     fadeIn(document.getElementById('returning-patient-form'));
+
 
     document.getElementById('new-patient').style.display = 'none';
     document.getElementById('online-returning-patient').style.display = 'none';
@@ -323,7 +339,7 @@ document.getElementById('returning-patient').addEventListener('click', function(
     let daysOfWeek = ['日', '月', '火', '水', '木', '金', '土'];
     // 曜日の名前を取得
     let dayName = daysOfWeek[dayOfWeek];
-    document.getElementById('datetime-display-returning').textContent = `${year}年${month}月${day}日 (${dayName}) ${hour}時${minute}分`;
+    document.getElementById('datetime-display-returning').textContent = `◎再診◎　${year}年${month}月${day}日 (${dayName}) ${hour}時${minute}分`;
     document.getElementById('returning-patient-form').scrollIntoView({ behavior: 'smooth' });
 });
 
@@ -332,6 +348,7 @@ document.getElementById('online-returning-patient').addEventListener('click', fu
     document.getElementById('online-returning-patient-form').classList.remove('hidden');
     fadeIn(document.getElementById('online-returning-patient-form'));
 
+ 
     document.getElementById('new-patient').style.display = 'none';
     document.getElementById('returning-patient').style.display = 'none';
     let selectedDateTime = new Date(selectedDate);
@@ -344,7 +361,7 @@ document.getElementById('online-returning-patient').addEventListener('click', fu
     let dayOfWeek = selectedDateTime.getDay();
     let daysOfWeek = ['日', '月', '火', '水', '木', '金', '土'];
     let dayName = daysOfWeek[dayOfWeek];
-    document.getElementById('online-datetime-display-returning').textContent = `${year}年${month}月${day}日 (${dayName}) ${hour}時${minute}分`;
+    document.getElementById('online-datetime-display-returning').textContent = `◎オンライン再診◎　${year}年${month}月${day}日 (${dayName}) ${hour}時${minute}分`;
     document.getElementById('online-returning-patient-form').scrollIntoView({ behavior: 'smooth' });
 });
 
@@ -353,7 +370,7 @@ function fadeIn(element) {
 }
 
 // 初診予約フォームの入力欄のイベントリスナー
-const inputs = document.querySelectorAll('#appointment-form input');
+const inputs = document.querySelectorAll('#new-patient-form input');
 const button = document.getElementById('proceed-button');
 
 inputs.forEach(input => {
